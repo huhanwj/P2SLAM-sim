@@ -1,39 +1,42 @@
 #include "general_functions.h"
 
+#include <vector>
+#include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <stdexcept>
+#include <gtsam/geometry/Pose2.h>
 
-std::vector<gtsam::Pose2> load_robot_poses_from_csv(const std::string &csv_file_path) {
-    std::vector<gtsam::Pose2> robotPoses;
-    std::ifstream poses_file(csv_file_path);
+std::vector<gtsam::Pose2> load_robot_poses_from_csv(const std::string& csv_file_path) {
+    std::vector<gtsam::Pose2> poses;
 
-    if (!poses_file.is_open()) {
-        std::cerr << "Error opening the file: " << csv_file_path << std::endl;
-        return robotPoses;
+    std::ifstream file(csv_file_path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open CSV file: " << csv_file_path << std::endl;
+        return poses;
     }
 
     std::string line;
-    while (std::getline(poses_file, line)) {
-        std::stringstream line_stream(line);
-
-        double x, y, theta;
-
-        std::getline(line_stream, line, ',');
-        x = std::stod(line);
-
-        std::getline(line_stream, line, ',');
-        y = std::stod(line);
-
-        std::getline(line_stream, line, ',');
-        theta = std::stod(line);
-
-        robotPoses.push_back(gtsam::Pose2(x, y, theta));
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::string x_str, y_str, theta_str;
+        if (std::getline(ss, x_str, ',') && std::getline(ss, y_str, ',') && std::getline(ss, theta_str)) {
+            try {
+                double x = std::stod(x_str);
+                double y = std::stod(y_str);
+                double theta = std::stod(theta_str);
+                poses.emplace_back(x, y, theta);
+            } catch (const std::invalid_argument& e) {
+                std::cerr << "Error parsing line '" << line << "': " << e.what() << std::endl;
+            }
+        }
     }
 
-    poses_file.close();
-    return robotPoses;
+    file.close();
+    return poses;
 }
+
 void save_optimized_poses_to_csv(const std::vector<gtsam::Pose2> &optimizedPoses, const std::string &csv_file_path) {
     std::ofstream output_file(csv_file_path);
 
