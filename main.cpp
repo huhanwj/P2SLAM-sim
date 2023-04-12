@@ -19,7 +19,7 @@ int main() {
         cerr << "Failed to load robot poses from the CSV file" << endl;
         return 1;
     }
-    string imu_csv_file_path = "data/DS1_gt.csv";
+    string imu_csv_file_path = "data/DS1_imu.csv";
     vector<Pose2> imuMeasurements = load_robot_poses_from_csv(imu_csv_file_path);; // Load or generate IMU measurements
 
     if (robotPoses.empty()) {
