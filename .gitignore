@@ -33,3 +33,9 @@
 
 # VS Code config file
 /.vscode
+
+# ROS bag file
+*.bag
+
+# CMake build
+/build

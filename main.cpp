@@ -12,18 +12,18 @@ using namespace std;
 
 int main() {
     // Step 1: Read or generate IMU measurements and robot poses
-    std::string pose_csv_file_path = "DS1_noise.csv";
-    std::vector<gtsam::Pose2> robotPoses = load_robot_poses_from_csv(pose_csv_file_path);
+    string pose_csv_file_path = "DS1_noise.csv";
+    vector<gtsam::Pose2> robotPoses = load_robot_poses_from_csv(pose_csv_file_path);
 
     if (robotPoses.empty()) {
-        std::cerr << "Failed to load robot poses from the CSV file" << std::endl;
+        cerr << "Failed to load robot poses from the CSV file" << endl;
         return 1;
     }
-    std::string imu_csv_file_path = "DS1_imu.csv";
+    string imu_csv_file_path = "DS1_gt.csv";
     vector<Pose2> imuMeasurements = load_robot_poses_from_csv(imu_csv_file_path);; // Load or generate IMU measurements
 
     if (robotPoses.empty()) {
-        std::cerr << "Failed to load IMU measurements from the CSV file" << std::endl;
+        cerr << "Failed to load IMU measurements from the CSV file" << endl;
         return 1;
     }
 
@@ -58,15 +58,15 @@ int main() {
 
     // Print the optimized pose estimates
 
-    std::vector<gtsam::Pose2> optimizedPoses;
+    vector<gtsam::Pose2> optimizedPoses;
     for (size_t i = 0; i < robotPoses.size(); ++i) {
         gtsam::Pose2 optimized_pose = optimizedValues.at<gtsam::Pose2>(gtsam::Symbol('x', i));
-        std::cout << "Optimized pose " << i << ": x=" << optimized_pose.x() << ", y=" << optimized_pose.y() << ", theta=" << optimized_pose.theta() << std::endl;
+        cout << "Optimized pose " << i << ": x=" << optimized_pose.x() << ", y=" << optimized_pose.y() << ", theta=" << optimized_pose.theta() << endl;
         optimizedPoses.push_back(optimized_pose);
     }
 
     // Replace this with the desired output CSV file path
-    std::string output_csv_file_path = "optimized_poses.csv";
+    string output_csv_file_path = "optimized_poses.csv";
     save_optimized_poses_to_csv(optimizedPoses, output_csv_file_path);
 
     return 0;
