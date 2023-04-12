@@ -17,6 +17,17 @@ std::vector<gtsam::Pose2> load_robot_poses_from_csv(const std::string& csv_file_
         return poses;
     }
 
+    // Skip the BOM if it's present at the beginning of the file
+    if (file.peek() == 0xEF) {
+        file.ignore(1);
+        if (file.peek() == 0xBB) {
+            file.ignore(1);
+            if (file.peek() == 0xBF) {
+                file.ignore(1);
+            }
+        }
+    }
+
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream ss(line);

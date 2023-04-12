@@ -39,3 +39,7 @@
 
 # CMake build
 /build
+/CMakeFiles
+
+# executables
+P2SLAM-sim

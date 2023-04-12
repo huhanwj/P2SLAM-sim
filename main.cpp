@@ -33,7 +33,7 @@ int main() {
     }
 
     // Step 2: Define the noise model for the IMU measurements
-    SharedNoiseModel imuNoise = noiseModel::Diagonal::Sigmas(Vector3(0.1, 0.1, 0.1));
+    SharedNoiseModel imuNoise = noiseModel::Diagonal::Sigmas(Vector3(0.01, 0.01, 0.01));
 
     // Step 3: Create a NonlinearFactorGraph and add RobotBetweenFactors for each IMU measurement
     NonlinearFactorGraph graph;
@@ -44,7 +44,7 @@ int main() {
 
     // Step 4: Add a prior factor to the first pose
     Pose2 priorPose = robotPoses[0];
-    SharedNoiseModel priorNoise = noiseModel::Diagonal::Sigmas(Vector3(0.01, 0.01, 0.01));
+    SharedNoiseModel priorNoise = noiseModel::Diagonal::Sigmas(Vector3(0.1, 0.1, 0.1));
     graph.add(PriorFactor<Pose2>(Symbol('x', 0), priorPose, priorNoise));
 
     // Step 5: Optimize the graph using Levenberg-Marquardt
