@@ -12,14 +12,14 @@ using namespace std;
 
 int main() {
     // Step 1: Read or generate IMU measurements and robot poses
-    string pose_csv_file_path = "DS1_noise.csv";
+    string pose_csv_file_path = "data/DS1_noise.csv";
     vector<gtsam::Pose2> robotPoses = load_robot_poses_from_csv(pose_csv_file_path);
 
     if (robotPoses.empty()) {
         cerr << "Failed to load robot poses from the CSV file" << endl;
         return 1;
     }
-    string imu_csv_file_path = "DS1_gt.csv";
+    string imu_csv_file_path = "data/DS1_gt.csv";
     vector<Pose2> imuMeasurements = load_robot_poses_from_csv(imu_csv_file_path);; // Load or generate IMU measurements
 
     if (robotPoses.empty()) {
