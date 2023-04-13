@@ -7,7 +7,7 @@ using namespace std;
 
 ChannelMatrix reconstruct_CSI(const ChannelMatrix& H, size_t i, size_t j, double f0, double c, int N, double d, double z){
     ChannelMatrix reconstructed_CSI(1, vector<vector<vector<vector<Complex>>>>(H[i].size(), vector<vector<vector<Complex>>>(1, vector<vector<Complex>>(H[i][0][j].size(), vector<Complex>(H[i][0][j][0].size())))));
-    #pragma omp parallel for collapse(3)
+    // #pragma omp parallel for collapse(3)
 
     for (size_t n = 0; n < H[i].size(); ++n){
         for (size_t m = 0; m < H[i][n][j].size(); ++m){
