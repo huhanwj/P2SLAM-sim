@@ -39,7 +39,7 @@ double direct_bearing(const ChannelMatrix& H, double f0, double c, int N, double
     double l_j_max = 25;
 
     vector<pair<double, double>> local_maxima;
-    #pragma omp parallel for collapse(2)
+    // #pragma omp parallel for collapse(2)
 
     for (int z_i_step = 0; z_i_step <= n_z_i_steps; ++z_i_step){
         double z_i = z_i_min + (z_i_max - z_i_min)* z_i_step/(n_z_i_steps);
