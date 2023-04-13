@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <gtsam/geometry/Pose2.h>
 #include <matio.h>
+#include <omp.h>
 
 vector<gtsam::Pose2> load_robot_poses_from_csv(const string& csv_file_path) {
     vector<gtsam::Pose2> poses;
@@ -94,6 +95,7 @@ ChannelMatrix load_5d_matrix_from_mat(const string &mat_file_path, const string 
     double *data = static_cast<double *>(matvar->data);
 
     ChannelMatrix channel_matrix(dim0, vector<vector<vector<vector<Complex>>>>(dim1, vector<vector<vector<Complex>>>(dim2, vector<vector<Complex>>(dim3, vector<Complex>(dim4)))));
+    #pragma omp parallel for collapse(5)
 
     for (size_t i = 0; i < dim0; ++i){
         for (size_t j = 0; j < dim1; ++j){

@@ -10,11 +10,15 @@
 #include <gtsam/nonlinear/LevenbergMarquardtOptimizer.h>
 #include <gtsam/nonlinear/Values.h>
 #include <vector>
+#include <omp.h>
+#include <tbb/task_scheduler_init.h>
 
 using namespace gtsam;
 using namespace std;
 
 int main() {
+    tbb::task_scheduler_init init(16); // Replace NUM_THREADS with the desired number of threads
+
     // Read IMU measurements, robot poses and 2-way raw CSI data
     string pose_csv_file_path = "data/DS1_noise.csv";
     vector<Pose2> robotPoses = load_robot_poses_from_csv(pose_csv_file_path);
@@ -64,6 +68,8 @@ int main() {
     );
 
     // Calculate the bearings
+    #pragma omp parallel for collapse(2)
+
     for (size_t i = 0; i < robotPoses.size(); ++i){
         for (size_t j = 0; j < ap_num; ++j){
             double bearing_ap = direct_bearing(channels_ap, f0, c, N, d, i, j);
@@ -96,6 +102,7 @@ int main() {
 
 
     // Add the APRobotFactors for each AP pose
+    #pragma omp parallel for collapse(2)
     for (size_t i = 0; i < robotPoses.size(); ++i){
         for (size_t j = 0;j < ap_num; ++j){
             graph.add(AP2RobotFactor(Symbol('l',j), Symbol('x',i), bearings_ap[i][j], customFactorsNoise));
@@ -115,8 +122,10 @@ int main() {
     for (size_t j = 0; j < ap_num; ++j){
         initialEstimates.insert(Symbol('l',j),Pose2(0,0,0));
     }
+    gtsam::LevenbergMarquardtParams params;
+    params.setVerbosity("TERMINATION"); // Optional, set verbosity level
 
-    LevenbergMarquardtOptimizer optimizer(graph, initialEstimates);
+    LevenbergMarquardtOptimizer optimizer(graph, initialEstimates, params);
     Values optimizedValues = optimizer.optimize();
 
     // Print the optimized pose estimates

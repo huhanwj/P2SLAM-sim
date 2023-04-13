@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <limits>
+#include <omp.h> // OpenMP
 
 using namespace std;
 
@@ -14,6 +15,8 @@ Complex calculate_lambda_ij(const ChannelMatrix& H, double f0, double c, int N, 
     int num_aps = H[0][0].size();
     int n_rx_ant = H[0][0][0].size();
     int n_tx_ant = H[0][0][0][0].size();
+
+    #pragma omp parallel for collapse(2)
 
     for (int n = -N/2; n<= N/2 -1; ++n){
         for (int m = 1; m <= n_rx_ant; ++m){
@@ -36,6 +39,7 @@ double direct_bearing(const ChannelMatrix& H, double f0, double c, int N, double
     double l_j_max = 25;
 
     vector<pair<double, double>> local_maxima;
+    #pragma omp parallel for collapse(2)
 
     for (int z_i_step = 0; z_i_step <= n_z_i_steps; ++z_i_step){
         double z_i = z_i_min + (z_i_max - z_i_min)* z_i_step/(n_z_i_steps);
