@@ -43,3 +43,10 @@
 
 # executables
 P2SLAM-sim
+
+# CSV and MAT file
+*.csv
+*.mat
+
+# Figures
+*.png
