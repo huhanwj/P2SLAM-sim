@@ -21,7 +21,7 @@ Complex calculate_lambda_ij(const ChannelMatrix& H, double f0, double c, int N, 
             Complex alpha_m = polar(1.0, 2.0*M_PI*f0*(m-1)*d*sin(z_i)/c);
             Complex tau_n = polar(1.0, 2.0*M_PI*fn*l_j/c);
 
-            Complex H_nm = H[i][n + N/2][j][m-1][0]; // first antenna
+            Complex H_nm = H[i][n + N/2][j][m-1][0]; // first antenna should be enough for correct bearing as the antennas should be placed in parallel
             lambda_ij += H_nm * alpha_m *tau_n;
         }
     }
