@@ -81,7 +81,7 @@ int main() {
         }
     }
     // Define the noise model for the IMU measurements
-    SharedNoiseModel imuNoise = noiseModel::Diagonal::Sigmas(Vector3(0.01, 0.01, 0.01));
+    SharedNoiseModel imuNoise = noiseModel::Diagonal::Sigmas(Vector3(0.1, 0.1, 0.1));
 
     // Define the noise model for the landmark measurements.
     // TODO: model the noise from the algorithm from ArgMax and ArgMin: Transitional probabilistic models in cognitive radio mesh networks.
@@ -99,7 +99,7 @@ int main() {
     for (size_t i = 0; i < robotPoses.size(); ++i){
         for (size_t j = 0;j < ap_num; ++j){
             graph.add(AP2RobotFactor(Symbol('l',j), Symbol('x',i), bearings_ap[i][j], customFactorsNoise));
-            graph.add(Robot2APFactor(Symbol('l',j), Symbol('x',i), bearings_cli[i][j], customFactorsNoise));
+            graph.add(Robot2APFactor(Symbol('x',i), Symbol('l',j), bearings_cli[i][j], customFactorsNoise));
         }
     }
     // Add a prior factor to the first pose
@@ -112,7 +112,7 @@ int main() {
     for (size_t i = 0; i < robotPoses.size(); ++i) {
         initialEstimates.insert(Symbol('x', i), robotPoses[i]);
     }
-    for (size_t j = 0; j < 5; ++j){
+    for (size_t j = 0; j < ap_num; ++j){
         initialEstimates.insert(Symbol('l',j),Pose2(0,0,0));
     }
 
